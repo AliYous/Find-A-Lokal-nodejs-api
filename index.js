@@ -5,6 +5,7 @@ const dotenv = require('dotenv');
 // Import routes
 const authRoute = require('./routes/auth');
 const postRoute = require('./routes/posts');
+const localRoute = require('./routes/locals');
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ app.use(express.json());
 // Route Middlewares
 app.use('/api/user', authRoute);
 app.use('/api/posts', postRoute);
+app.use('/api/locals', localRoute);
 
 
 app.listen(3000, () => console.log('Server Up and running'));
