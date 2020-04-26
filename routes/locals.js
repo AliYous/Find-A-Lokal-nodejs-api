@@ -9,16 +9,17 @@ router.get('/', async (req, res) => {
 });
 
 // Get locals by city
-router.get('/:localCity', async (req, res) => {
-    const locals = await Local.find({ localCity: req.params.localCity})
+router.get('/city/:localCity', async (req, res) => {
+    const locals = await Local.find({ localCity: req.params.localCity });
     res.json(locals);
-})
+});
 
 // Get one local by id
-router.get('/:local_id', async (req, res) => {
-    const locals = await Local.findById(req.params._id)
-    res.json(locals);
-})
+router.get('/id/:local_id', async (req, res) => {
+    var ObjectId = require('mongoose').Types.ObjectId; 
+    const local = await Local.find({ _id: ObjectId(req.params.local_id) })
+    res.json(local);
+});
 
 
 module.exports = router
