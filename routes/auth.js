@@ -3,6 +3,7 @@ const User = require('../model/user');
 const Local = require('../model/local');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const verify = require('./verifyToken');
 const { registerValidation, loginValidation } = require('../validation');
 
 
@@ -46,7 +47,7 @@ router.post('/register', async (req, res) => {
     }catch(err) {
         res.status(400).send(err);
     }
-})
+});
 
 router.post('/login', async (req, res) => {
 
@@ -64,7 +65,19 @@ router.post('/login', async (req, res) => {
     // Create and assign a jwt token
     const token = jwt.sign({_id: user._id}, process.env.TOKEN_SECRET);
     res.header('auth-token', token).send(token);
-})
+});
+
+// Update user by id
+router.put('/edit/:user_id', verify, async (req, res) => {
+    const user = await User.findById(req.params._id);
+    if (user) {
+        const updatedUser = req.body;
+        const savedUser = await User.updateOne({ _id: ObjectId(req.params.user_id) }, updatedUser);
+        res.send(savedUser);
+    } else {
+        res.send('no user attahced to the queried _id')
+    }
+});
 
 
 
