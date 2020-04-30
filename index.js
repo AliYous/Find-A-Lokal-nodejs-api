@@ -7,6 +7,8 @@ const cors = require('cors');
 const authRoute = require('./routes/auth');
 const postRoute = require('./routes/posts');
 const localRoute = require('./routes/locals');
+const localPreviewRoute = require('./routes/localPreviews');
+
 
 dotenv.config();
 
@@ -29,6 +31,8 @@ app.use(express.json());
 app.use('/api/user', authRoute);
 app.use('/api/posts', postRoute);
 app.use('/api/locals', localRoute);
+app.use('/api/locals/previews', localPreviewRoute);
+
 
 
 app.listen(3000, () => console.log('Server Up and running'));

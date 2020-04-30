@@ -43,8 +43,10 @@ router.put('/id/:local_id/update', verify, async (req, res) => {
             upsert: true, // If the record doesn't exist it will be created
             new: true
         });
+        res.send("Local & Local Preview Updated");
+    } else {
+        res.send("Local Updated");
     }
-    res.send("Local Updated");
 });
 
 module.exports = router
