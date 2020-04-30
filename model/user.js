@@ -24,6 +24,11 @@ const userSchema = new mongoose.Schema({
         default: false,
         required: true
     },
+    firstTimeVisit: {
+        type: Boolean,
+        required: true,
+        default: true
+    },
     date: {
         type: Date,
         default: Date.now

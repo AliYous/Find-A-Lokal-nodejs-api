@@ -27,7 +27,8 @@ router.post('/register', async (req, res) => {
         name: req.body.name,
         email: req.body.email,
         password: hashedPassword,
-        isLocal: req.body.isLocal
+        isLocal: req.body.isLocal,
+        firstTimeVisit: true
     });
     
     // Save to DB
@@ -57,10 +58,12 @@ router.post('/login', async (req, res) => {
 
     // email exists ?
     const user = await User.findOne({email: req.body.email});
-    if (!user) return res.status(400).send('No account is linked to that email');
+    if (!user) return res.status(400).send('No account is linked to that email');    
     // Password is correct ?
     const validPass = await bcrypt.compare(req.body.password, user.password); // Compares user.password with the hashed password from the db
     if (!validPass) return res.status(400).send('Invalid Password');
+
+
 
     // Create and assign a jwt token
     const token = jwt.sign({_id: user._id}, process.env.TOKEN_SECRET);

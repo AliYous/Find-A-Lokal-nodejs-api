@@ -16,14 +16,20 @@ router.get('/city/:localCity', async (req, res) => {
     res.json(locals);
 });
 
-// Get one local by id
+// Get one local by local_id
 router.get('/id/:local_id', async (req, res) => {
     var ObjectId = require('mongoose').Types.ObjectId; 
     const local = await Local.find({ _id: ObjectId(req.params.local_id) });
     res.json(local);
 });
+// Get one local by user_id
+router.get('/user_id/:user_id', async (req, res) => {
+    const local = await Local.find({ user_id: req.params.user_id });
+    res.json(local);
+});
 
-router.put('/id/:local_id/update', verify, async (req, res) => {
+//edit local profile
+router.put('/id/:local_id/update', async (req, res) => {
     var ObjectId = require('mongoose').Types.ObjectId; 
     localUpdated = req.body;
     if(localHelper.localProfileIsComplete(localUpdated)) { localUpdated.profile_isComplete = true };
