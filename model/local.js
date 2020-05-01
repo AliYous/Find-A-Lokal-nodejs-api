@@ -36,6 +36,9 @@ const localSchema = new mongoose.Schema({
         min: 50,
         max: 1500
     },
+    localImage: {
+        type: String
+    },
     profile_isComplete: {
         type: Boolean,
         default: false

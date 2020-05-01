@@ -26,6 +26,9 @@ const localPreviewSchema = new mongoose.Schema({
         min: 10,
         required: true
     },
+    localImage: {
+        type: String
+    },
     date: {
         type: Date,
         default: Date.now

@@ -2,7 +2,34 @@ const router = require('express').Router();
 const verify = require('./verifyToken');
 const Local = require('../model/local');
 const LocalPreview = require('../model/localPreview');
-const localHelper = require('../helpers/localHelper')
+const localHelper = require('../helpers/localHelper');
+
+const multer = require('multer');
+const storage = multer.diskStorage({
+    destination(req, file, callback) {
+        callback(null, './uploads/');
+    },
+    filename(req, file, callback) {
+        callback(null, Date.now() + file.originalname);
+    }
+});
+
+fileFilter = (req, file, callback) => {
+if(file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+    callback(null, true);
+} else {
+    callback('Only .png or .jpeg accepted', false)
+}
+}
+const upload = multer({
+    storage: storage,
+    // limits: {
+    //     fileSize: 1024 * 1024 * 5
+    // },
+    fileFilter: fileFilter
+
+});
+
 
 // Get all Locals
 router.get('/', async (req, res) => {
@@ -29,9 +56,10 @@ router.get('/user_id/:user_id', async (req, res) => {
 });
 
 //edit local profile
-router.put('/id/:local_id/update', async (req, res) => {
+router.put('/id/:local_id/update', upload.single('local_image'), async (req, res) => {
     var ObjectId = require('mongoose').Types.ObjectId; 
     localUpdated = req.body;
+    localUpdated.localImage = req.file.path //Adding the image to the local
     if(localHelper.localProfileIsComplete(localUpdated)) { localUpdated.profile_isComplete = true };
     savedLocal = await Local.updateOne({ _id: ObjectId(req.params.local_id) },localUpdated);
 
@@ -43,6 +71,7 @@ router.put('/id/:local_id/update', async (req, res) => {
             localCity: localUpdated.localCity,
             hourlyRate: localUpdated.hourlyRate,
             quote: localUpdated.quote,
+            localImage: localUpdated.localImage
         };
 
         const savedLocalPreview = await LocalPreview.findOneAndUpdate({local_id: localUpdated._id}, localPreview, { 
