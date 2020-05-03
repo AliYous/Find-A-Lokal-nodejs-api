@@ -79,7 +79,7 @@ router.put('/id/:local_id/update', upload.single('file'), async (req, res) => {
             upsert: true, // If the record doesn't exist it will be created
             new: true
         });
-        res.send('localUpdated');
+        res.send('local & preview Updated');
     } else {
         res.send("Local Updated");
     }
