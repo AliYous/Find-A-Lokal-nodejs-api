@@ -46,6 +46,7 @@ router.get('/city/:localCity', async (req, res) => {
 // Get one local by local_id
 router.get('/id/:local_id', async (req, res) => {
     var ObjectId = require('mongoose').Types.ObjectId; 
+    console.log(req.params.local_id)
     const local = await Local.find({ _id: ObjectId(req.params.local_id) });
     res.json(local);
 });
@@ -56,9 +57,9 @@ router.get('/user_id/:user_id', async (req, res) => {
 });
 
 //edit local profile
-router.put('/id/:local_id/update', upload.single('local_image'), async (req, res) => {
+router.put('/id/:local_id/update', upload.single('file'), async (req, res) => {
     var ObjectId = require('mongoose').Types.ObjectId; 
-    localUpdated = req.body;
+    const localUpdated = req.body;
     localUpdated.localImage = req.file.path //Adding the image to the local
     if(localHelper.localProfileIsComplete(localUpdated)) { localUpdated.profile_isComplete = true };
     savedLocal = await Local.updateOne({ _id: ObjectId(req.params.local_id) },localUpdated);
@@ -78,7 +79,7 @@ router.put('/id/:local_id/update', upload.single('local_image'), async (req, res
             upsert: true, // If the record doesn't exist it will be created
             new: true
         });
-        res.send("Local & Local Preview Updated");
+        res.send('localUpdated');
     } else {
         res.send("Local Updated");
     }
