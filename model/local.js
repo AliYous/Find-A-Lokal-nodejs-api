@@ -24,7 +24,8 @@ const localSchema = new mongoose.Schema({
         min: 10
     },
     languages: {
-        type: Array
+        type: Array,
+        default: ['French', 'English']
     },
     aboutMe: {
         type: String,
