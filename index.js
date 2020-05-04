@@ -23,6 +23,7 @@ const corsOptions = {
   };
 app.use(cors(corsOptions));
 
+
 // Middleware
 app.use(express.json());
 app.use( '/uploads' ,express.static('uploads')); // to make the uploads folder available (public)

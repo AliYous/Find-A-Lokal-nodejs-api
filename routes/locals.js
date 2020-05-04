@@ -1,9 +1,11 @@
 const router = require('express').Router();
+require('dotenv').config();
 const verify = require('./verifyToken');
 const Local = require('../model/local');
 const LocalPreview = require('../model/localPreview');
 const localHelper = require('../helpers/localHelper');
 
+// Multer (accept images in the requests)
 const multer = require('multer');
 const storage = multer.diskStorage({
     destination(req, file, callback) {
@@ -28,6 +30,14 @@ const upload = multer({
     // },
     fileFilter: fileFilter
 
+});
+
+// Cloudinary (image upload)
+const cloudinary = require('cloudinary').v2;
+cloudinary.config({ 
+  cloud_name: 'dnidiwifa', 
+  api_key: process.env.CLOUDINARY_API_KEY, 
+  api_secret:  process.env.CLOUDINARY_API_SECRET 
 });
 
 
@@ -59,20 +69,39 @@ router.get('/user_id/:user_id', async (req, res) => {
 //edit local profile
 router.put('/id/:local_id/update', upload.single('file'), async (req, res) => {
     var ObjectId = require('mongoose').Types.ObjectId; 
-    const localUpdated = req.body;
-    localUpdated.localImage = req.file.path //Adding the image to the local
-    if(localHelper.localProfileIsComplete(localUpdated)) { localUpdated.profile_isComplete = true };
-    savedLocal = await Local.updateOne({ _id: ObjectId(req.params.local_id) },localUpdated);
+    var localUpdated = JSON.parse(req.body.localData);
 
-    // If the profile is complete (we want it to appear in the Locals list as preview), we update it or create it if not exist.
-    if (localUpdated.profile_isComplete) {
+    // Save the image to cloudinary then assign the img url to the local.localImage, if no image, then just save the user data
+    if(req.file) {
+        cloudinary.uploader.upload(req.file.path, async (err, result) => {
+            if(err) {res.send(err)}
+            localUpdated.localImage = result.url; //Adding the image to the local
+            const savedLocal = await Local.updateOne({ _id: ObjectId(req.params.local_id) },localUpdated);
+            const localPreview = {
+                local_id: localUpdated._id,
+                name: localUpdated.name,
+                localCity: localUpdated.localCity,
+                hourlyRate: localUpdated.hourlyRate,
+                quote: localUpdated.quote,
+                localImage: localUpdated.localImage,
+            };
+    
+            const savedLocalPreview = await LocalPreview.findOneAndUpdate({local_id: localUpdated._id}, localPreview, { 
+                upsert: true, // If the record doesn't exist it will be created
+                new: true
+            });
+            res.send('local & preview Updated');
+
+        })
+    } else { 
+        const savedLocal = await Local.updateOne({ _id: ObjectId(req.params.local_id) },localUpdated); 
         const localPreview = {
             local_id: localUpdated._id,
             name: localUpdated.name,
             localCity: localUpdated.localCity,
             hourlyRate: localUpdated.hourlyRate,
             quote: localUpdated.quote,
-            localImage: localUpdated.localImage
+            localImage: localUpdated.localImage,
         };
 
         const savedLocalPreview = await LocalPreview.findOneAndUpdate({local_id: localUpdated._id}, localPreview, { 
@@ -80,8 +109,7 @@ router.put('/id/:local_id/update', upload.single('file'), async (req, res) => {
             new: true
         });
         res.send('local & preview Updated');
-    } else {
-        res.send("Local Updated");
+
     }
 });
 
