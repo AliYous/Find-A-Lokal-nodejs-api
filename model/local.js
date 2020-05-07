@@ -40,6 +40,25 @@ const localSchema = new mongoose.Schema({
     localImage: {
         type: String
     },
+    
+    // ---- Reviews ----
+    numberOfReviews: {
+        type: Number,
+        required: true,
+        default: 0
+    },
+    avgRating: {
+        type: Number,
+        required: true,
+        default: -1
+    },
+    reviews: [{
+        reviewerId: {type: String, required: true },
+        rating: { type: Number, required: true },
+        reviewText: { type: String, required: true, min: 10 }
+    }],
+    // ---- ----
+
     profile_isComplete: {
         type: Boolean,
         default: false
