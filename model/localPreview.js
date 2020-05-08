@@ -29,6 +29,17 @@ const localPreviewSchema = new mongoose.Schema({
     localImage: {
         type: String
     },
+    // ---- Reviews ----
+    numberOfReviews: {
+        type: Number,
+        required: true,
+        default: 0
+    },
+    avgRating: {
+        type: Number,
+        required: true,
+        default: -1
+    },
     date: {
         type: Date,
         default: Date.now

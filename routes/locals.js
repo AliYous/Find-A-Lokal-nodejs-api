@@ -124,9 +124,14 @@ router.put('/id/:local_id/reviews/update', async (req, res) => {
         reviewText: reqBody.reviewText
     }
     let local = await Local.findById(ObjectId(req.params.local_id));
+    let localPreview = await LocalPreview.findOne({local_id: req.params.local_id});
+  
 
     local.reviews.push(review);
+
     local.numberOfReviews = local.reviews.length;
+    localPreview.numberOfReviews = local.reviews.length;
+
     let total = 0;
     local.reviews.forEach(review => {
         if(review.rating) {
@@ -136,16 +141,16 @@ router.put('/id/:local_id/reviews/update', async (req, res) => {
     });
 
     local.avgRating = total/local.reviews.length;
-    console.log(local.avgRating)
+    localPreview.avgRating = total/local.reviews.length;
 
-    // console.log("local : " + JSON.stringify(local))
 
+    const updatedLocalPreview = await LocalPreview.findOneAndUpdate({ local_id: req.params.local_id}, localPreview);
     
     try {
         const updatedLocal = await Local.updateOne({ _id: ObjectId(req.params.local_id) },local); 
-        res.send("local reviews updated : " + JSON.stringify(updatedLocal.reviews))
+        res.send("local reviews updated : " + JSON.stringify(updatedLocal.reviews));
     } catch(err) {
-        res.send(err)
+        res.send(err);
     }
 
 });
