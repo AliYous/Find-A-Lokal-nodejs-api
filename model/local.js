@@ -40,7 +40,7 @@ const localSchema = new mongoose.Schema({
     localImage: {
         type: String
     },
-    
+
     // ---- Reviews ----
     numberOfReviews: {
         type: Number,
@@ -53,9 +53,9 @@ const localSchema = new mongoose.Schema({
         default: -1
     },
     reviews: [{
-        reviewerId: {type: String, required: true },
-        rating: { type: Number, required: true },
-        reviewText: { type: String, required: true, min: 10 }
+        reviewerId: String, // id of user who left the review
+        rating: Number,
+        reviewText: String
     }],
     // ---- ----
 

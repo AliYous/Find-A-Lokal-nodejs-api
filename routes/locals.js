@@ -113,4 +113,42 @@ router.put('/id/:local_id/update', upload.single('file'), async (req, res) => {
     }
 });
 
+// Add review to local and update avgRating + numberOfReviews
+router.put('/id/:local_id/reviews/update', async (req, res) => {
+    var ObjectId = require('mongoose').Types.ObjectId; 
+    const reqBody = JSON.parse(JSON.stringify(req.body));
+
+    const review = {
+        reviewerId: reqBody.reviewerId,
+        rating: reqBody.rating,
+        reviewText: reqBody.reviewText
+    }
+    let local = await Local.findById(ObjectId(req.params.local_id));
+
+    local.reviews.push(review);
+    local.numberOfReviews = local.reviews.length;
+    let total = 0;
+    local.reviews.forEach(review => {
+        if(review.rating) {
+            total += review.rating;
+            console.log(total);        
+        }
+    });
+
+    local.avgRating = total/local.reviews.length;
+    console.log(local.avgRating)
+
+    // console.log("local : " + JSON.stringify(local))
+
+    
+    try {
+        const updatedLocal = await Local.updateOne({ _id: ObjectId(req.params.local_id) },local); 
+        res.send("local reviews updated : " + JSON.stringify(updatedLocal.reviews))
+    } catch(err) {
+        res.send(err)
+    }
+
+});
+
+
 module.exports = router
