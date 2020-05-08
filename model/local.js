@@ -54,6 +54,7 @@ const localSchema = new mongoose.Schema({
     },
     reviews: [{
         reviewerId: String, // id of user who left the review
+        reviewerName: String,
         rating: Number,
         reviewText: String
     }],

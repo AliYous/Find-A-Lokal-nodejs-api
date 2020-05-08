@@ -120,6 +120,7 @@ router.put('/id/:local_id/reviews/update', async (req, res) => {
 
     const review = {
         reviewerId: reqBody.reviewerId,
+        reviewerName: reqBody.reviewerName,
         rating: reqBody.rating,
         reviewText: reqBody.reviewText
     }
