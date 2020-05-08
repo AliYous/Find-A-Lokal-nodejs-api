@@ -5,9 +5,9 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 // Import routes
 const authRoute = require('./routes/auth');
-const postRoute = require('./routes/posts');
 const localRoute = require('./routes/locals');
 const localPreviewRoute = require('./routes/localPreviews');
+const conversationRoute = require('./routes/conversations');
 
 
 dotenv.config();
@@ -31,9 +31,10 @@ app.use( '/uploads' ,express.static('uploads')); // to make the uploads folder a
 
 // Route Middlewares
 app.use('/api/user', authRoute);
-app.use('/api/posts', postRoute);
 app.use('/api/locals', localRoute);
 app.use('/api/locals/previews', localPreviewRoute);
+app.use('/api/conversations', conversationRoute);
+
 
 
 
