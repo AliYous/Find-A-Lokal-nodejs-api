@@ -19,6 +19,16 @@ const userSchema = new mongoose.Schema({
         max: 1024,
         min: 6
     },
+    isLocal: {
+        type: Boolean,
+        default: false,
+        required: true
+    },
+    firstTimeVisit: {
+        type: Boolean,
+        required: true,
+        default: true
+    },
     date: {
         type: Date,
         default: Date.now
